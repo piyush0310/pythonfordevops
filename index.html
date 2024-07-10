@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation Example</title>
+</head>
+<body>
+    <form id="myForm">
+        <input type="text" name="Name" required placeholder="Name">
+        <input type="email" name="Email" required placeholder="Email">
+        <input type="text" name="Phone" placeholder="Phone">
+        <button type="submit">Submit</button>
+    </form>
+    <div id="errorMessages" style="color: red;"></div>
+
+    <script>
+        function validateForm(form) {
+            let isValid = true;
+            let messages = [];
+
+            form.querySelectorAll('input').forEach(input => {
+                if (input.hasAttribute('required') && !input.value.trim()) {
+                    isValid = false;
+                    messages.push(`${input.name} is required.`);
+                }
+
+                if (input.type === 'email' && input.value.trim() && !validateEmail(input.value.trim())) {
+                    isValid = false;
+                    messages.push(`${input.name} is not a valid email address.`);
+                }
+            });
+
+            return { isValid, messages };
+        }
+
+        function validateEmail(email) {
+            const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return regex.test(email);
+        }
+
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const result = validateForm(this);
+
+            const errorContainer = document.getElementById('errorMessages');
+            errorContainer.innerHTML = '';
+
+            if (!result.isValid) {
+                result.messages.forEach(message => {
+                    const errorItem = document.createElement('p');
+                    errorItem.textContent = message;
+                    errorContainer.appendChild(errorItem);
+                });
+            } else {
+                alert('Form is valid! Submitting form...');
+                // this.submit(); // Uncomment to submit the form
+            }
+        });
+    </script>
+</body>
+</html>
